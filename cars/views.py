@@ -192,9 +192,9 @@ class BookingViewSet(viewsets.ModelViewSet):
     cache_key_detail = 'booking_detail_{}'
 
 
-    @method_decorator(cache_page(60*15, key_prefix=cache_key_list))
+    #@method_decorator(cache_page(60*15, key_prefix=cache_key_list))
     def list(self, request, *args, **kwargs):
-        logger.info(f"Fetching bookings, cache key: {self.cache_key_list}")
+        #logger.info(f"Fetching bookings, cache key: {self.cache_key_list}")
         try:
                 queryset = self.get_queryset()
                 serializer = self.get_serializer(queryset, many=True)
@@ -207,12 +207,12 @@ class BookingViewSet(viewsets.ModelViewSet):
                logger.error(f"Error Fetching Bookings {e}")
                return Response({"error": "Something went wrong"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
-    @method_decorator(cache_page(60*15, key_prefix=lambda view: view.cache_key_detail.format(view.kwargs.get('pk'))))
+    #@method_decorator(cache_page(60*15, key_prefix=lambda view: view.cache_key_detail.format(view.kwargs.get('pk'))))
     def retrieve(self, request, *args, **kwargs):
         try:
             booking_id = kwargs.get('pk')
-            cache_key = self.cache_key_detail.format(booking_id)
-            logger.info(f"Fetching booking details, cache key: {cache_key}")
+           # cache_key = self.cache_key_detail.format(booking_id)
+          #  logger.info(f"Fetching booking details, cache key: {cache_key}")
             response = super().retrieve(request, *args, **kwargs)
             response.data = {
                 'status': 'success',
@@ -246,8 +246,8 @@ class BookingViewSet(viewsets.ModelViewSet):
         
             self.perform_create(serializer)
             
-            cache.delete(self.cache_key_list)
-            logger.info(f"Invalidated booking list cache, key: {self.cache_key_list}")
+            #cache.delete(self.cache_key_list)
+            #logger.info(f"Invalidated booking list cache, key: {self.cache_key_list}")
             response_data = {
                 'status': 'success',
                 'message': 'Booking created successfully',
@@ -268,9 +268,9 @@ class BookingViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
 
-        cache.delete(self.cache_key_list)
-        cache.delete(self.cache_key_detail.format(instance.pk))
-        logger.info(f"Invalidated booking detail cache, key: {self.cache_key_detail.format(instance.pk)}")
+        #cache.delete(self.cache_key_list)
+        #cache.delete(self.cache_key_detail.format(instance.pk))
+        #logger.info(f"Invalidated booking detail cache, key: {self.cache_key_detail.format(instance.pk)}")
 
         response_data = {
             'status': 'success',
