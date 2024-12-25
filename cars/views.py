@@ -413,7 +413,10 @@ def paystack_webhook(request):
 
                             booking = payment.booking
                             booking.status = 'Confirmed'
+                            booking.car.available = False
                             booking.save()
+
+                            
 
                             logger.info(f"Booking {booking.id} status updated to Confirmed")
 
