@@ -418,9 +418,13 @@ def paystack_webhook(request):
                             booking.save()
 
                             # Delete the cache
-                            cache_key = f'car_detail_{booking.car.id}'
-                            cache.delete(cache_key)
-                            logger.info(f"Deleted cache for key: {cache_key}")  
+                            car_cache_key = f'car_detail_{booking.car.id}'
+                            booking_cache_key = f'booking_detail_{booking.id}'
+
+                            cache.delete(car_cache_key)
+                            cache.delete(booking_cache_key)
+                            logger.info(f"Deleted cache for key: {car_cache_key}") 
+                            logger.info(f"Deleted cache for key: {booking_cache_key}") 
 
                             logger.info(f"Booking {booking.id} status updated to Confirmed")
 
